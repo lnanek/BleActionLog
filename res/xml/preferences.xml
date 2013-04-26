@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+        <Preference
+            android:key="device"
+            android:title="Device" 
+            android:summary="Tap to Select Device"
+            />
+        <EditTextPreference
+            android:key="connectionAttempts"
+            android:title="Connection Attempts" 
+            android:defaultValue="1"
+            android:inputType="number"
+            />
+        <EditTextPreference
+            android:key="retryRateS"
+            android:title="Retry Rate (s)" 
+            android:defaultValue="5"
+            android:inputType="number"
+            />
+        <ListPreference 
+			android:key="encryption" 
+			android:title="Encryption" 
+			android:entries="@array/pref_encryption_entries" 
+			android:entryValues="@array/pref_encryption_values" 
+			android:defaultValue="0" 
+			/>
+        <ListPreference 
+			android:key="service" 
+			android:title="GATT Service" 
+			android:entries="@array/pref_service_entries" 
+			android:entryValues="@array/pref_service_values" 
+			android:defaultValue="00001802-0000-1000-8000-00805f9b34fb" 
+			/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useCustomScanParameters"
+			android:title="Use Custom Scan Parameters" 
+			/>
+</PreferenceScreen>

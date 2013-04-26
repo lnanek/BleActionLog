@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_encryption_entries">        
+        <item>GATT_ENCRYPT_NONE</item>
+        <item>GATT_ENCRYPT</item>
+        <item>GATT_ENCRYPT_NO_MITM</item>
+        <item>GATT_ENCRYPT_MITM</item>
+    </string-array>
+    <string-array name="pref_encryption_values">        
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    
+    <string-array name="pref_service_entries">        
+        <item>Immediate Alert</item>
+        <item>Heart Rate</item>
+        <item>TI SensorTag Temperature</item>
+    </string-array>
+    <string-array name="pref_service_values">        
+        <item>00001802-0000-1000-8000-00805f9b34fb</item>
+        <item>0000180D-0000-1000-8000-00805f9b34fb</item>
+        <item>F000AA00-0451-4000-B000-000000000000</item>
+    </string-array>
+    
+</resources>
