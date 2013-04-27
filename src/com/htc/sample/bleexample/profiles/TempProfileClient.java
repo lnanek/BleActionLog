@@ -33,6 +33,7 @@ import com.htc.android.bluetooth.le.gatt.BleDescriptor;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
 import com.htc.sample.bleexample.ConnectActivity;
 import com.htc.sample.bleexample.constants.BleActions;
+import com.htc.sample.bleexample.constants.BleUtils;
 import com.htc.sample.bleexample.constants.TiBleConstants;
 
 /**
@@ -84,6 +85,10 @@ public class TempProfileClient extends BleClientProfile implements
 		Log.d(TAG, "setEncryption = " + mEncryption);
 		setEncryption(aDevice, mEncryption);
 		
+		Log.d(TAG, "Registering for temperature notifications...");
+		mService.registerForNotification(aDevice, 0, new BleGattID(
+				TiBleConstants.IRTEMPERATURE_DATA_UUID));
+		
 		// Note that the super class will call refresh.
 		super.onDeviceConnected(aDevice);
 	}
@@ -97,24 +102,6 @@ public class TempProfileClient extends BleClientProfile implements
 
 		// connectBackground(device);
 	}
-	
-	private boolean requireCharacterisitics(final BluetoothDevice aDevice, final String... ids) {
-		if ( null == ids ) {
-			return true;
-		}
-		
-		for ( String id : ids ) {
-			final BleCharacteristic characteristic = 
-					mService.getCharacteristic(aDevice, new BleGattID(id));
-			if ( null == characteristic ) {
-				ConnectActivity.broadcastStatus(mContext, 
-						"Expected characteristic missing - check device and reconnect");
-				return false;
-			}
-		}
-		
-		return true;
-	}
 
 	@Override
 	public void onRefreshed(final BluetoothDevice aDevice) {
@@ -122,30 +109,14 @@ public class TempProfileClient extends BleClientProfile implements
 		super.onRefreshed(aDevice);
 		ConnectActivity.broadcast(mContext, BleActions.ACTION_REFRESHED, aDevice);
 		
-		if ( !requireCharacterisitics(aDevice, 
+		if ( !BleUtils.hasCharacterisitics(aDevice, mService,
 				TiBleConstants.IRTEMPERATURE_DATA_UUID, 
 				TiBleConstants.IRTEMPERATURE_CONF_UUID) ) {
+			ConnectActivity.broadcastStatus(mContext, 
+					"Expected characteristic missing - check device and reconnect");
 			disconnect(aDevice);
 			return;
 		}
-		
-		Log.d(TAG, "Registering for temperature notifications...");
-		mService.registerForNotification(aDevice, 0, new BleGattID(
-				TiBleConstants.IRTEMPERATURE_DATA_UUID));
-	}
-	
-	private void configureNotifications(final BluetoothDevice aDevice, final BleGattID aCharacteristic) {
-		final BleCharacteristic characteristic = new BleCharacteristic(aCharacteristic);
-		final BleDescriptor clientConfig = new BleDescriptor(
-				new BleGattID(BleConstants.GATT_UUID_CHAR_CLIENT_CONFIG));
-		characteristic.addDescriptor(clientConfig);
-		final byte[] value = new byte[] {
-				BleConstants.GATT_CLIENT_CONFIG_NOTIFICATION_BIT, 
-				0 // GATT_CLIENT_CHAR_CONFIG_RESERVED_BYTE
-		};
-		clientConfig.setValue(value);
-		clientConfig.setWriteType(BleConstants.GATTC_TYPE_WRITE);
-		mService.writeCharacteristic(aDevice, 0, characteristic);
 	}	
 
 	@Override
@@ -185,7 +156,7 @@ public class TempProfileClient extends BleClientProfile implements
 	}
 
 	public void performSecondAction(final BluetoothDevice aDevice) {
-		configureNotifications(aDevice, new BleGattID(
+		BleUtils.configureNotifications(aDevice, mService, new BleGattID(
 				TiBleConstants.IRTEMPERATURE_DATA_UUID));
 	}
 

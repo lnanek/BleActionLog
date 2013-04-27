@@ -31,9 +31,11 @@ import com.htc.android.bluetooth.le.gatt.BleClientProfile;
 import com.htc.android.bluetooth.le.gatt.BleClientService;
 import com.htc.android.bluetooth.le.gatt.BleConstants;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
+import com.htc.sample.bleexample.ConnectActivity;
 import com.htc.sample.bleexample.constants.BleActions;
 import com.htc.sample.bleexample.constants.BleCharacteristics;
 import com.htc.sample.bleexample.constants.BleServices;
+import com.htc.sample.bleexample.constants.BleUtils;
 
 /**
  * Connects to a device to write to its alert level.
@@ -81,7 +83,7 @@ public class IasProfileClient extends BleClientProfile implements ExampleActions
 		
 		Log.d(TAG, "setEncryption = " + mEncryption);
 		setEncryption(aDevice, mEncryption);
-
+		
 		broadcast(BleActions.ACTION_CONNECTED, aDevice);
 
 		// Note that the super class will call refresh.
@@ -102,6 +104,7 @@ public class IasProfileClient extends BleClientProfile implements ExampleActions
 	public void onRefreshed(final BluetoothDevice aDevice) {
 		Log.d(TAG, "onRefreshed");
 		super.onRefreshed(aDevice);
+		
 		broadcast(BleActions.ACTION_REFRESHED, aDevice);
 	}
 
@@ -131,14 +134,8 @@ public class IasProfileClient extends BleClientProfile implements ExampleActions
 	public void alert(final BluetoothDevice aDevice, final byte aLevel) {
 		Log.d(TAG, "alert");
 
-		final BleCharacteristic alertLevelCharacteristic = mService
-				.getCharacteristic(aDevice, new BleGattID(BleCharacteristics.ALERT_LEVEL));
-		if (null == alertLevelCharacteristic) {
-			Log.d(TAG,
-					"alert failed - could not find alert level characteristic in service");
-			return;
-		}
-
+		final BleCharacteristic alertLevelCharacteristic = new BleCharacteristic(
+				new BleGattID(BleCharacteristics.ALERT_LEVEL));
 		byte[] value = { aLevel };
 		alertLevelCharacteristic.setValue(value);
 		alertLevelCharacteristic

@@ -140,19 +140,6 @@ public class ConnectUi {
 
 	public void appendStatus(final String aStatus) {
 		mStatusView.append(aStatus);
-		mStatusView.post(new Runnable() {
-			public void run() {
-				final Layout layout = mStatusView.getLayout();
-				if (layout != null) {
-					int scrollDelta = layout.getLineBottom(mStatusView
-							.getLineCount() - 1)
-							- mStatusView.getScrollY()
-							- mStatusView.getHeight();
-					if (scrollDelta > 0)
-						mStatusView.scrollBy(0, scrollDelta);
-				}
-			}
-		});
 	}
 	
 }

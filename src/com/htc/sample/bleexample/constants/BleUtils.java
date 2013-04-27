@@ -20,10 +20,16 @@ package com.htc.sample.bleexample.constants;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-import com.htc.android.bluetooth.le.gatt.BleCharacteristic;
-import com.htc.android.bluetooth.le.gatt.BleGattID;
-
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.util.Log;
+
+import com.htc.android.bluetooth.le.gatt.BleCharacteristic;
+import com.htc.android.bluetooth.le.gatt.BleClientService;
+import com.htc.android.bluetooth.le.gatt.BleConstants;
+import com.htc.android.bluetooth.le.gatt.BleDescriptor;
+import com.htc.android.bluetooth.le.gatt.BleGattID;
+import com.htc.sample.bleexample.ConnectActivity;
 
 /**
  * Holds utility methods for working with BLE in general.
@@ -141,5 +147,41 @@ public class BleUtils {
 			}
 		}
 		return null;
+	}
+	
+	public static boolean hasCharacterisitics(
+			final BluetoothDevice aDevice, 
+			final BleClientService aService, 
+			final String... ids) {
+		if ( null == ids ) {
+			return true;
+		}
+		
+		for ( String id : ids ) {
+			final BleCharacteristic characteristic = 
+					aService.getCharacteristic(aDevice, new BleGattID(id));
+			if ( null == characteristic ) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public static void configureNotifications(
+			final BluetoothDevice aDevice, 
+			final BleClientService aService, 
+			final BleGattID aCharacteristic) {
+		final BleCharacteristic characteristic = new BleCharacteristic(aCharacteristic);
+		final BleDescriptor clientConfig = new BleDescriptor(
+				new BleGattID(BleConstants.GATT_UUID_CHAR_CLIENT_CONFIG));
+		characteristic.addDescriptor(clientConfig);
+		final byte[] value = new byte[] {
+				BleConstants.GATT_CLIENT_CONFIG_NOTIFICATION_BIT, 
+				0 // GATT_CLIENT_CHAR_CONFIG_RESERVED_BYTE
+		};
+		clientConfig.setValue(value);
+		clientConfig.setWriteType(BleConstants.GATTC_TYPE_WRITE);
+		aService.writeCharacteristic(aDevice, 0, characteristic);
 	}
 }

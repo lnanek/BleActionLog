@@ -34,6 +34,8 @@ import com.htc.android.bluetooth.le.gatt.BleGattID;
 import com.htc.sample.bleexample.ConnectActivity;
 import com.htc.sample.bleexample.constants.BleActions;
 import com.htc.sample.bleexample.constants.BleCharacteristics;
+import com.htc.sample.bleexample.constants.BleUtils;
+import com.htc.sample.bleexample.constants.TiBleConstants;
 
 /**
  * Connects to a heart rate collector to read and set values.
@@ -82,7 +84,7 @@ public class HrmProfileClient extends BleClientProfile implements ExampleActions
 		
 		Log.d(TAG, "setEncryption = " + mEncryption);
 		setEncryption(aDevice, mEncryption);
-
+		
 		Log.d(TAG, "Registering for heart rate measurement notifications...");
 		mService.registerForNotification(aDevice, 0, 
 				new BleGattID(BleCharacteristics.HEART_RATE_MEASUREMENT));
@@ -107,33 +109,18 @@ public class HrmProfileClient extends BleClientProfile implements ExampleActions
 		super.onRefreshed(aDevice);
 		ConnectActivity.broadcast(mContext, BleActions.ACTION_REFRESHED, aDevice);
 		
-		Log.d(TAG, "Configuring heart rate measurement for notifications...");
-		configureNotifications(aDevice, new BleGattID(BleCharacteristics.HEART_RATE_MEASUREMENT));		
-	}
-
-	private void configureNotifications(final BluetoothDevice aDevice, final BleGattID aCharacteristic) {
-		final BleCharacteristic characteristic = mService.getCharacteristic(aDevice, aCharacteristic);
-		if ( null == characteristic ) {
+		if ( !BleUtils.hasCharacterisitics(aDevice, mService,
+				BleCharacteristics.HEART_RATE_MEASUREMENT,
+				BleCharacteristics.HEART_RATE_BODY_SENSOR_LOCATION) ) {
 			ConnectActivity.broadcastStatus(mContext, 
 					"Expected characteristic missing - check device and reconnect");
+			disconnect(aDevice);
 			return;
 		}
 		
-		final BleDescriptor clientConfig = characteristic.getDescriptor(new BleGattID(
-				BleConstants.GATT_UUID_CHAR_CLIENT_CONFIG));
-		if ( null == clientConfig ) {
-			ConnectActivity.broadcastStatus(mContext, 
-					"Expected descriptor missing - check device and reconnect");	
-			return;
-		}		
-		
-		final byte[] value = new byte[] {
-				BleConstants.GATT_CLIENT_CONFIG_NOTIFICATION_BIT, 
-				0 // GATT_CLIENT_CHAR_CONFIG_RESERVED_BYTE
-		};
-		clientConfig.setValue(value);
-		clientConfig.setWriteType(BleConstants.GATTC_TYPE_WRITE);
-		mService.writeCharacteristic(aDevice, 0, characteristic);
+		Log.d(TAG, "Configuring heart rate measurement for notifications...");
+		BleUtils.configureNotifications(aDevice, mService, 
+				new BleGattID(BleCharacteristics.HEART_RATE_MEASUREMENT));		
 	}
 
 	@Override
@@ -168,27 +155,15 @@ public class HrmProfileClient extends BleClientProfile implements ExampleActions
 
 	private int writeHeartRateControlPointCharacteristic(
 			final BluetoothDevice aDevice, final int aValue) {
-		final BleCharacteristic controlPoint = mService.getCharacteristic(
-				aDevice, new BleGattID(BleCharacteristics.HEART_RATE_CONTROL_POINT));
-		if ( null == controlPoint ) {
-			ConnectActivity.broadcastStatus(mContext, 
-					"Expected characteristic missing - check device and reconnect");
-			return BleConstants.SERVICE_UNAVAILABLE;			
-		}
-
+		final BleCharacteristic controlPoint = new BleCharacteristic(
+				new BleGattID(BleCharacteristics.HEART_RATE_CONTROL_POINT));
 		controlPoint.setValue(aValue);
 		return mService.writeCharacteristic(aDevice, 0, controlPoint);
 	}
 
 	private int readBodySensorLocationCharacteristic(final BluetoothDevice aDevice) {
-		final BleCharacteristic sensorLocation = mService.getCharacteristic(
-				aDevice, new BleGattID(BleCharacteristics.HEART_RATE_BODY_SENSOR_LOCATION));
-		if ( null == sensorLocation ) {
-			ConnectActivity.broadcastStatus(mContext, 
-					"Expected characteristic missing - check device and reconnect");
-			return BleConstants.SERVICE_UNAVAILABLE;			
-		}
-		
+		final BleCharacteristic sensorLocation = new BleCharacteristic(
+				new BleGattID(BleCharacteristics.HEART_RATE_BODY_SENSOR_LOCATION));		
 	    return mService.readCharacteristic(aDevice, sensorLocation);
 	}
 		
