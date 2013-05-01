@@ -22,6 +22,7 @@ import android.content.Context;
 import com.htc.android.bluetooth.le.gatt.BleClientProfile;
 import com.htc.sample.bleexample.Prefs;
 import com.htc.sample.bleexample.constants.BleServices;
+import com.htc.sample.bleexample.constants.BleUtils;
 import com.htc.sample.bleexample.constants.TiBleConstants;
 
 /**
@@ -29,6 +30,24 @@ import com.htc.sample.bleexample.constants.TiBleConstants;
  *
  */
 public class ProfileClientFactory {
+	
+	public static CharSequence[] getServiceIds() {
+		return new CharSequence[] {
+				BleServices.IMMEDIATE_ALERT,
+				BleServices.HEART_RATE,
+				TiBleConstants.IRTEMPERATURE_SERV_UUID,
+				TiBleConstants.SIMPLE_KEYS_SERV_UUID,
+		};
+	}
+	
+	public static CharSequence[] getServiceLabels() {
+		final CharSequence[] services = getServiceIds();
+		final CharSequence[] lables = new CharSequence[services.length];
+		for(int i = 0; i < services.length; i++) {
+			lables[i] = BleUtils.getLabelForUuid((String) services[i]);
+		}
+		return lables;
+	}
 	
 	public static final BleClientProfile getClient(final Context aContext) {
 		final Prefs prefs = new Prefs(aContext);
@@ -41,9 +60,11 @@ public class ProfileClientFactory {
 			return new HrmProfileClient(aContext, encryption);
 		} else if (service.equals(TiBleConstants.IRTEMPERATURE_SERV_UUID)) {
 			return new TempProfileClient(aContext, encryption);
+		} else if (service.equals(TiBleConstants.SIMPLE_KEYS_SERV_UUID)) {
+			return new SimpleKeysProfileClient(aContext, encryption);
 		}
 		
-		return null;
+		throw new RuntimeException("No profile defined for that service.");
 	}
 
 }

@@ -108,7 +108,7 @@ public class SelectDeviceActivity extends Activity {
 		public void onItemClick(final AdapterView<?> aAdapterView,
 				final View aView, final int aPosition, final long aId) {
 			// Stop discovery and return address to calling activity.
-			mBtAdapter.cancelDiscovery();
+			//mBtAdapter.cancelDiscovery();
 			Bundle localBundle = new Bundle();
 			String address = ((BluetoothDevice) mDeviceList.get(aPosition))
 					.getAddress();
@@ -220,7 +220,7 @@ public class SelectDeviceActivity extends Activity {
 		super.onStop();
 		unregisterReceiver(mReceiver);
 		if (mBtAdapter != null) {
-			mBtAdapter.cancelDiscovery();
+			//mBtAdapter.cancelDiscovery();
 		}
 		finish();
 	}

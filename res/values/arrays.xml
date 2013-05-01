@@ -13,15 +13,4 @@
         <item>3</item>
     </string-array>
     
-    <string-array name="pref_service_entries">        
-        <item>Immediate Alert</item>
-        <item>Heart Rate</item>
-        <item>TI SensorTag Temperature</item>
-    </string-array>
-    <string-array name="pref_service_values">        
-        <item>00001802-0000-1000-8000-00805f9b34fb</item>
-        <item>0000180D-0000-1000-8000-00805f9b34fb</item>
-        <item>F000AA00-0451-4000-B000-000000000000</item>
-    </string-array>
-    
 </resources>

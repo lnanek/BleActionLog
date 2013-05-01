@@ -27,9 +27,6 @@
         <ListPreference 
 			android:key="service" 
 			android:title="GATT Service" 
-			android:entries="@array/pref_service_entries" 
-			android:entryValues="@array/pref_service_values" 
-			android:defaultValue="00001802-0000-1000-8000-00805f9b34fb" 
 			/>
         <CheckBoxPreference
             android:defaultValue="false"

@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 
 import com.htc.sample.bleexample.constants.BleServices;
 import com.htc.sample.bleexample.constants.BleUtils;
+import com.htc.sample.bleexample.profiles.ProfileClientFactory;
 
 /**
  * Configures preferences for which BLE device to connect to and how.
@@ -61,7 +63,7 @@ public class ConnectionPreferenceActivity extends PreferenceActivity {
 	
 	private Preference mEncryptionPref;
 	
-	private Preference mServicePref;
+	private ListPreference mServicePref;
 	
 	private Preference mUseCustomScanParametersPref;
 	
@@ -95,7 +97,12 @@ public class ConnectionPreferenceActivity extends PreferenceActivity {
 		mConnectionAttemptsPref = mManager.findPreference("connectionAttempts");
 		mRetryRateSPref = mManager.findPreference("retryRateS");
 		mEncryptionPref = mManager.findPreference("encryption");
-		mServicePref = mManager.findPreference("service");
+
+		mServicePref = (ListPreference) mManager.findPreference("service");
+		mServicePref.setEntries(ProfileClientFactory.getServiceLabels());
+		mServicePref.setEntryValues(ProfileClientFactory.getServiceIds());
+		mServicePref.setDefaultValue(ProfileClientFactory.getServiceIds()[0]);
+		
 		mUseCustomScanParametersPref = mManager.findPreference("useCustomScanParameters");	
 		
 		// Make sure Bluetooth supported.

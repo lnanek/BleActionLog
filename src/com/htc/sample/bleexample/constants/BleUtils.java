@@ -21,7 +21,6 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.util.Log;
 
 import com.htc.android.bluetooth.le.gatt.BleCharacteristic;
@@ -29,7 +28,6 @@ import com.htc.android.bluetooth.le.gatt.BleClientService;
 import com.htc.android.bluetooth.le.gatt.BleConstants;
 import com.htc.android.bluetooth.le.gatt.BleDescriptor;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
-import com.htc.sample.bleexample.ConnectActivity;
 
 /**
  * Holds utility methods for working with BLE in general.

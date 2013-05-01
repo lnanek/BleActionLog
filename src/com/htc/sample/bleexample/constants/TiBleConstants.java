@@ -53,6 +53,13 @@ public class TiBleConstants {
 	public static final String GYROSCOPE_SERV_UUID = "f000aa50-0451-4000-B000-000000000000";
 	public static final String GYROSCOPE_DATA_UUID = "f000aa51-0451-4000-b000-000000000000";
 	public static final String GYROSCOPE_CONF_UUID = "f000aa52-0451-4000-b000-000000000000";
+	
+	public static final String SIMPLE_KEYS_SERV_UUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
+	public static final String SIMPLE_KEYS_KEYPRESSED_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb";
+	
+	public static final String TEST_SERVICE_UUID = "f000aa60-0451-4000-b000-000000000000";
+	public static final String TEST_DATA_UUID = "f000aa61-0451-4000-b000-000000000000";
+	public static final String TEST_CONFIG_UUID = "f000aa62-0451-4000-b000-000000000000";
 
 }
 
