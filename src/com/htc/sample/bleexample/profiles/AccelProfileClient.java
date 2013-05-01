@@ -29,7 +29,6 @@ import com.htc.android.bluetooth.le.gatt.BleCharacteristic;
 import com.htc.android.bluetooth.le.gatt.BleClientProfile;
 import com.htc.android.bluetooth.le.gatt.BleClientService;
 import com.htc.android.bluetooth.le.gatt.BleConstants;
-import com.htc.android.bluetooth.le.gatt.BleDescriptor;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
 import com.htc.sample.bleexample.constants.BleActions;
 import com.htc.sample.bleexample.constants.BleUtils;
@@ -39,23 +38,23 @@ import com.htc.sample.bleexample.constants.TiBleConstants;
  * Connects to a TI Sensor Tag to read the temperature.
  * 
  */
-public class TempProfileClient extends BleClientProfile implements
+public class AccelProfileClient extends BleClientProfile implements
 		ExampleActions {
 
-	private static String TAG = TempProfileClient.class.getSimpleName();
+	private static String TAG = AccelProfileClient.class.getSimpleName();
 
-	private TempServiceClient mService;
+	private AccelServiceClient mService;
 
 	private Context mContext;
 	
 	private byte mEncryption;
 
-	public TempProfileClient(final Context aContext, final byte aEncryption) {
+	public AccelProfileClient(final Context aContext, final byte aEncryption) {
 		super(aContext, new BleGattID(UUID.randomUUID()));
 		Log.d(TAG, "Contructor...");
 		mContext = aContext;
 		mEncryption = aEncryption;
-		mService = new TempServiceClient(aContext);
+		mService = new AccelServiceClient(aContext);
 
 		final ArrayList<BleClientService> requiredServices = new ArrayList<BleClientService>();
 		requiredServices.add(mService);
@@ -84,9 +83,9 @@ public class TempProfileClient extends BleClientProfile implements
 		Log.d(TAG, "setEncryption = " + mEncryption);
 		setEncryption(aDevice, mEncryption);
 		
-		Log.d(TAG, "Registering for temperature notifications...");
+		Log.d(TAG, "Registering for accelerometer notifications...");
 		mService.registerForNotification(aDevice, 0, new BleGattID(
-				TiBleConstants.IRTEMPERATURE_DATA_UUID));
+				TiBleConstants.ACCELEROMETER_DATA_UUID));
 		
 		// Note that the super class will call refresh.
 		super.onDeviceConnected(aDevice);
@@ -109,8 +108,8 @@ public class TempProfileClient extends BleClientProfile implements
 		BleActions.broadcast(mContext, BleActions.ACTION_REFRESHED, aDevice);
 		
 		if ( !BleUtils.hasCharacterisitics(aDevice, mService,
-				TiBleConstants.IRTEMPERATURE_DATA_UUID, 
-				TiBleConstants.IRTEMPERATURE_CONF_UUID) ) {
+				TiBleConstants.ACCELEROMETER_DATA_UUID, 
+				TiBleConstants.ACCELEROMETER_CONF_UUID) ) {
 			BleActions.broadcastStatus(mContext, 
 					"Expected characteristic missing - check device and reconnect");
 			disconnect(aDevice);
@@ -132,10 +131,10 @@ public class TempProfileClient extends BleClientProfile implements
 		notifyAll();
 	}
 
-	public void turnOnTemperatureReadings(final BluetoothDevice aDevice) {
-		Log.d(TAG, "turnOnTemperatureReadings");
+	public void turnOnAccelerometerReadings(final BluetoothDevice aDevice) {
+		Log.d(TAG, "turnOnAccelerometerReadings");
 		final BleCharacteristic tempConfig = new BleCharacteristic(
-				new BleGattID(TiBleConstants.IRTEMPERATURE_CONF_UUID));
+				new BleGattID(TiBleConstants.ACCELEROMETER_CONF_UUID));
 		byte[] value = { 1 };
 		tempConfig.setValue(value);
 		tempConfig.setWriteType(BleConstants.GATTC_TYPE_WRITE);
@@ -143,7 +142,7 @@ public class TempProfileClient extends BleClientProfile implements
 	}
 
 	public String getFirstActionName() {
-		return "Turn On Temperature Sensor";
+		return "Turn On Accelerometer Sensor";
 	}
 
 	public String getSecondActionName() {
@@ -151,12 +150,12 @@ public class TempProfileClient extends BleClientProfile implements
 	}
 
 	public void performFirstAction(final BluetoothDevice aDevice) {
-		turnOnTemperatureReadings(aDevice);
+		turnOnAccelerometerReadings(aDevice);
 	}
 
 	public void performSecondAction(final BluetoothDevice aDevice) {
 		BleUtils.configureNotifications(aDevice, mService, new BleGattID(
-				TiBleConstants.IRTEMPERATURE_DATA_UUID));
+				TiBleConstants.ACCELEROMETER_DATA_UUID));
 	}
 
 }

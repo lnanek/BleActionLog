@@ -17,6 +17,12 @@
  ************************************************************************************/
 package com.htc.sample.bleexample.constants;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.Context;
+import android.content.Intent;
+
+import com.htc.sample.bleexample.ConnectActivity;
+
 /**
  * Broadcast actions sent and received by the sample code to indicate GATT actions.
  *
@@ -37,5 +43,63 @@ public class BleActions {
 	
 	public static final String ACTION_DISCONNECTED = BleActions.class.getName() + ".ACTION_DISCONNECTED";
 	
+	public static final String ACTION_STATUS_MESSAGE = 
+			ConnectActivity.class.getName() + ".ACTION_STATUS_MESSAGE";
+	
+	public static final String STATUS_MESSAGE_EXTRA = 
+			ConnectActivity.class.getName() + ".STATUS_MESSAGE_EXTRA";
+	
+	public static final String STATUS_X_EXTRA = 
+			ConnectActivity.class.getName() + ".STATUS_X_EXTRA";
+	
+	public static final String STATUS_Y_EXTRA = 
+			ConnectActivity.class.getName() + ".STATUS_Y_EXTRA";
+	
+	public static final String STATUS_Z_EXTRA = 
+			ConnectActivity.class.getName() + ".STATUS_Z_EXTRA";
+	
+	public static final String STATUS_RANGE_EXTRA = 
+			ConnectActivity.class.getName() + ".STATUS_RANGE_EXTRA";
+
+	public static void broadcast(final Context aContext, 
+			final String aAction, final BluetoothDevice aDevice) {
+		Intent intent = new Intent();
+		intent.setAction(aAction);
+		if (null != aDevice) {
+			intent.putExtra(BluetoothDevice.EXTRA_DEVICE, aDevice.getAddress());
+		}
+		aContext.sendBroadcast(intent);
+	}
+
+	public static void broadcastStatus(final Context aContext, final String aStatus) {
+		Intent intent = new Intent();
+		intent.setAction(ACTION_STATUS_MESSAGE);
+		if ( null != aStatus ) {
+			intent.putExtra(STATUS_MESSAGE_EXTRA, aStatus);
+		}
+		aContext.sendBroadcast(intent);		
+	}
+
+	public static void broadcastStatus(final Context aContext, final String aStatus,
+			final Float aX, final Float aY, final Float aZ, final Float aRange) {
+		Intent intent = new Intent();
+		intent.setAction(ACTION_STATUS_MESSAGE);
+		if ( null != aStatus ) {
+			intent.putExtra(STATUS_MESSAGE_EXTRA, aStatus);
+		}
+		if ( null != aX ) {
+			intent.putExtra(STATUS_X_EXTRA, aX);
+		}
+		if ( null != aY ) {
+			intent.putExtra(STATUS_Y_EXTRA, aY);
+		}
+		if ( null != aZ ) {
+			intent.putExtra(STATUS_Z_EXTRA, aZ);
+		}
+		if ( null != aRange ) {
+			intent.putExtra(STATUS_RANGE_EXTRA, aRange);
+		}
+		aContext.sendBroadcast(intent);		
+	}
 }
 

@@ -30,7 +30,6 @@ import com.htc.android.bluetooth.le.gatt.BleClientProfile;
 import com.htc.android.bluetooth.le.gatt.BleClientService;
 import com.htc.android.bluetooth.le.gatt.BleConstants;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
-import com.htc.sample.bleexample.ConnectActivity;
 import com.htc.sample.bleexample.constants.BleActions;
 import com.htc.sample.bleexample.constants.BleCharacteristics;
 import com.htc.sample.bleexample.constants.BleUtils;
@@ -71,16 +70,16 @@ public class SimpleKeysProfileClient extends BleClientProfile implements
 		super.onInitialized(aSuccess);
 
 		if (aSuccess) {
-			ConnectActivity.broadcast(mContext, BleActions.ACTION_INITIALIZED, null);
+			BleActions.broadcast(mContext, BleActions.ACTION_INITIALIZED, null);
 		} else {
-			ConnectActivity.broadcast(mContext, BleActions.ACTION_INITIALIZE_FAILED, null);
+			BleActions.broadcast(mContext, BleActions.ACTION_INITIALIZE_FAILED, null);
 		}
 	}
 
 	@Override
 	public void onDeviceConnected(final BluetoothDevice aDevice) {
 		Log.d(TAG, "onDeviceConnected");
-		ConnectActivity.broadcast(mContext, BleActions.ACTION_CONNECTED, aDevice);
+		BleActions.broadcast(mContext, BleActions.ACTION_CONNECTED, aDevice);
 
 		Log.d(TAG, "setEncryption = " + mEncryption);
 		setEncryption(aDevice, mEncryption);
@@ -98,7 +97,7 @@ public class SimpleKeysProfileClient extends BleClientProfile implements
 		Log.d(TAG, "onDeviceDisconnected");
 		super.onDeviceDisconnected(aDevice);
 
-		ConnectActivity.broadcast(mContext, BleActions.ACTION_DISCONNECTED, aDevice);
+		BleActions.broadcast(mContext, BleActions.ACTION_DISCONNECTED, aDevice);
 
 		// connectBackground(device);
 	}
@@ -107,11 +106,11 @@ public class SimpleKeysProfileClient extends BleClientProfile implements
 	public void onRefreshed(final BluetoothDevice aDevice) {
 		Log.d(TAG, "onRefreshed");
 		super.onRefreshed(aDevice);
-		ConnectActivity.broadcast(mContext, BleActions.ACTION_REFRESHED, aDevice);
+		BleActions.broadcast(mContext, BleActions.ACTION_REFRESHED, aDevice);
 		
 		if ( !BleUtils.hasCharacterisitics(aDevice, mService,
 				TiBleConstants.SIMPLE_KEYS_KEYPRESSED_UUID) ) {
-			ConnectActivity.broadcastStatus(mContext, 
+			BleActions.broadcastStatus(mContext, 
 					"Expected characteristic missing - check device and reconnect");
 			disconnect(aDevice);
 			return;
@@ -122,7 +121,7 @@ public class SimpleKeysProfileClient extends BleClientProfile implements
 	public void onProfileRegistered() {
 		Log.d(TAG, "onProfileRegistered");
 		super.onProfileRegistered();
-		ConnectActivity.broadcast(mContext, BleActions.ACTION_REGISTERED, null);
+		BleActions.broadcast(mContext, BleActions.ACTION_REGISTERED, null);
 	}
 
 	@Override

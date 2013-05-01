@@ -27,7 +27,7 @@ import android.util.Log;
 import com.htc.android.bluetooth.le.gatt.BleCharacteristic;
 import com.htc.android.bluetooth.le.gatt.BleClientService;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
-import com.htc.sample.bleexample.ConnectActivity;
+import com.htc.sample.bleexample.constants.BleActions;
 import com.htc.sample.bleexample.constants.BleCharacteristics;
 import com.htc.sample.bleexample.constants.BleServices;
 import com.htc.sample.bleexample.constants.BleUtils;
@@ -74,7 +74,7 @@ public class HrmServiceClient extends BleClientService {
 
     	final String label = BleUtils.getLabelForUuid(characteristic.getID().getUuid().toString());
 		final byte firstByte = characteristic.getValue()[0];
-		ConnectActivity.broadcastStatus(mContext, "onReadCharacteristicComplete - " + label + " - " + firstByte);
+		BleActions.broadcastStatus(mContext, "onReadCharacteristicComplete - " + label + " - " + firstByte);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class HrmServiceClient extends BleClientService {
     		final boolean energyExpendedIsPresent =checkBit(firstByte, 3);
     		final boolean rrIntervalIsPresent =checkBit(firstByte, 4);
     		
-    		ConnectActivity.broadcastStatus(mContext, 
+    		BleActions.broadcastStatus(mContext, 
     				"onCharacteristicChanged - HEART_RATE_MEASUREMENT:\n" +
         			" heartRateValueFormatIsTwoBytes = " + heartRateValueFormatIsTwoBytes + "\n" +
         			" sensorContactIsSupported = " + sensorContactIsSupported + "\n" +
@@ -115,7 +115,7 @@ public class HrmServiceClient extends BleClientService {
     	}
     	
     	final String label = BleUtils.getLabelForUuid(characteristic);
-    	ConnectActivity.broadcastStatus(mContext, "onCharacteristicChanged - " + label + " - " + firstByte);
+    	BleActions.broadcastStatus(mContext, "onCharacteristicChanged - " + label + " - " + firstByte);
     }
 
 	@Override

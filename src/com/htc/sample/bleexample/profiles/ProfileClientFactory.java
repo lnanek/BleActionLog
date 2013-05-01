@@ -36,6 +36,7 @@ public class ProfileClientFactory {
 				BleServices.IMMEDIATE_ALERT,
 				BleServices.HEART_RATE,
 				TiBleConstants.IRTEMPERATURE_SERV_UUID,
+				TiBleConstants.ACCELEROMETER_SERV_UUID,
 				TiBleConstants.SIMPLE_KEYS_SERV_UUID,
 		};
 	}
@@ -60,6 +61,8 @@ public class ProfileClientFactory {
 			return new HrmProfileClient(aContext, encryption);
 		} else if (service.equals(TiBleConstants.IRTEMPERATURE_SERV_UUID)) {
 			return new TempProfileClient(aContext, encryption);
+		} else if (service.equals(TiBleConstants.ACCELEROMETER_SERV_UUID)) {
+			return new AccelProfileClient(aContext, encryption);
 		} else if (service.equals(TiBleConstants.SIMPLE_KEYS_SERV_UUID)) {
 			return new SimpleKeysProfileClient(aContext, encryption);
 		}

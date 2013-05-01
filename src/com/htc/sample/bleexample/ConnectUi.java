@@ -18,7 +18,6 @@
  ************************************************************************************/
 package com.htc.sample.bleexample;
 
-import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +45,8 @@ public class ConnectUi {
 	private Button mSelectDevice;
 
 	private TextView mStatusView;
+	
+	private PointerView mPointerView;
 
 	TextView mDeviceNameView;
 
@@ -61,6 +62,7 @@ public class ConnectUi {
 		mStatusView.setMovementMethod(new ScrollingMovementMethod());
 		mStatusView.setText("Configuring Bluetooth...\n");
 		mDeviceNameView = (TextView) mActivity.findViewById(R.id.deviceName);
+		mPointerView = (PointerView) mActivity.findViewById(R.id.pointerView);
 
 		mCancelBackgroundConnection = (Button) mActivity
 				.findViewById(R.id.cancel);
@@ -112,6 +114,10 @@ public class ConnectUi {
 		setFirstProfileButton(false, false, "Action");
 		setSecondProfileButton(false, false, "Action");
 
+	}
+	
+	void setPointer(final Float aX, final Float aY, final Float aZ, final Float aRange) {
+		mPointerView.set(aX, aY, aZ, aRange);
 	}
 
 	void setConnectionButtonsEnabled(final boolean aEnabled) {

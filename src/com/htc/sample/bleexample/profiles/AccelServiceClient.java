@@ -28,19 +28,21 @@ import com.htc.android.bluetooth.le.gatt.BleCharacteristic;
 import com.htc.android.bluetooth.le.gatt.BleClientService;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
 import com.htc.sample.bleexample.constants.BleActions;
+import com.htc.sample.bleexample.constants.BleCharacteristics;
 import com.htc.sample.bleexample.constants.BleUtils;
+import com.htc.sample.bleexample.constants.TiBleConstants;
 
 /**
- * Reads and writes to a device.
+ * Reads and sets values on a TI SensorTag temperature service.
  */
-public class ServiceClient extends BleClientService {
-
-    public static String TAG = HrmServiceClient.class.getSimpleName();
+public class AccelServiceClient extends BleClientService {
+	
+    public static String TAG = AccelServiceClient.class.getSimpleName();
 	
 	private Context mContext;
     
-    public ServiceClient(final Context aContext, final BleGattID aId) {
-        super(aId);
+    public AccelServiceClient(final Context aContext) {
+        super(new BleGattID(TiBleConstants.ACCELEROMETER_SERV_UUID));
         Log.d(TAG, "Constructor...");
         mContext = aContext;
     }
@@ -80,11 +82,42 @@ public class ServiceClient extends BleClientService {
         Log.d(TAG, "onCharacteristicChanged");
     	super.onCharacteristicChanged(d, characteristic);
     	
+    	if ( BleUtils.eqId(characteristic, TiBleConstants.ACCELEROMETER_DATA_UUID) ) {
+    		    		
+    		final float x = calcXValue(characteristic.getValue());
+    		final float y = calcYValue(characteristic.getValue());
+    		final float z = calcZValue(characteristic.getValue());
+
+    		BleActions.broadcastStatus(mContext, 
+    				"onCharacteristicChanged - IRTEMPERATURE_DATA_UUID:\n" +
+        			" x = " + x + "\n" +
+        			" y = " + y + "\n" +
+        			" z = " + z,
+        			x, y, z, KXTJ9_RANGE
+        			);    		
+    		return;
+    	}
+
 		final byte firstByte = characteristic.getValue()[0];
     	final String label = BleUtils.getLabelForUuid(characteristic);
     	BleActions.broadcastStatus(mContext, "onCharacteristicChanged - " + label + " - " + firstByte);
     }
-
+    
+    private static final float KXTJ9_RANGE = 4.0f;
+    
+    private static final float calcXValue(final byte[] aData) {
+        return ((aData[0] * 1.0f) / (256 / KXTJ9_RANGE));
+    }
+    
+    private static final float calcYValue(final byte[] aData) {
+        //Orientation of sensor on board means we need to swap Y (multiplying with -1)
+        return ((aData[1] * 1.0f) / (256 / KXTJ9_RANGE)) * -1;
+    }
+    
+    private static final float calcZValue(final byte[] aData) {
+        return ((aData[2] * 1.0f) / (256 / KXTJ9_RANGE));
+    }
+    
 	@Override
 	public ArrayList<BleCharacteristic> getAllCharacteristics(
 			BluetoothDevice d) {

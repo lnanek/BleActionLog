@@ -27,7 +27,7 @@ import android.util.Log;
 import com.htc.android.bluetooth.le.gatt.BleCharacteristic;
 import com.htc.android.bluetooth.le.gatt.BleClientService;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
-import com.htc.sample.bleexample.ConnectActivity;
+import com.htc.sample.bleexample.constants.BleActions;
 import com.htc.sample.bleexample.constants.BleCharacteristics;
 import com.htc.sample.bleexample.constants.BleUtils;
 import com.htc.sample.bleexample.constants.TiBleConstants;
@@ -74,7 +74,7 @@ public class TempServiceClient extends BleClientService {
 
     	final String label = BleUtils.getLabelForUuid(characteristic.getID().getUuid().toString());
 		final byte firstByte = characteristic.getValue()[0];
-		ConnectActivity.broadcastStatus(mContext, "onReadCharacteristicComplete - " + label + " - " + firstByte);
+		BleActions.broadcastStatus(mContext, "onReadCharacteristicComplete - " + label + " - " + firstByte);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class TempServiceClient extends BleClientService {
     		
     		final int dieTempC = dieTempRaw / 128;
 
-    		ConnectActivity.broadcastStatus(mContext, 
+    		BleActions.broadcastStatus(mContext, 
     				"onCharacteristicChanged - IRTEMPERATURE_DATA_UUID:\n" +
         			" dieTempRaw = " + dieTempRaw + "\n" +
         			" dieTempC = " + dieTempC
@@ -100,7 +100,7 @@ public class TempServiceClient extends BleClientService {
 
 		final byte firstByte = characteristic.getValue()[0];
     	final String label = BleUtils.getLabelForUuid(characteristic);
-    	ConnectActivity.broadcastStatus(mContext, "onCharacteristicChanged - " + label + " - " + firstByte);
+    	BleActions.broadcastStatus(mContext, "onCharacteristicChanged - " + label + " - " + firstByte);
     }
 
 	@Override

@@ -33,7 +33,7 @@ import android.util.Log;
 import com.htc.android.bluetooth.le.gatt.BleCharacteristic;
 import com.htc.android.bluetooth.le.gatt.BleClientService;
 import com.htc.android.bluetooth.le.gatt.BleGattID;
-import com.htc.sample.bleexample.ConnectActivity;
+import com.htc.sample.bleexample.constants.BleActions;
 import com.htc.sample.bleexample.constants.BleUtils;
 import com.htc.sample.bleexample.constants.TiBleConstants;
 
@@ -90,7 +90,7 @@ public class SimpleKeysServiceClient extends BleClientService {
 
     	final String label = BleUtils.getLabelForUuid(characteristic.getID().getUuid().toString());
 		final byte firstByte = characteristic.getValue()[0];
-		ConnectActivity.broadcastStatus(mContext, "onReadCharacteristicComplete - " + label + " - " + firstByte);
+		BleActions.broadcastStatus(mContext, "onReadCharacteristicComplete - " + label + " - " + firstByte);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class SimpleKeysServiceClient extends BleClientService {
     			vibrate();
     		}
     		
-    		ConnectActivity.broadcastStatus(mContext, 
+    		BleActions.broadcastStatus(mContext, 
     				"onCharacteristicChanged - SIMPLE_KEYS_KEYPRESSED_UUID:\n" +
         			" firstButtonDown = " + firstButtonDown + ", \n" + 
         			" secondButtonDown = " + secondButtonDown + ", \n" + 
@@ -123,7 +123,7 @@ public class SimpleKeysServiceClient extends BleClientService {
     		return;
     	}
     	final String label = BleUtils.getLabelForUuid(characteristic);
-    	ConnectActivity.broadcastStatus(mContext, "onCharacteristicChanged - " + label + " - " + firstByte);
+    	BleActions.broadcastStatus(mContext, "onCharacteristicChanged - " + label + " - " + firstByte);
     }
 
 	@Override

@@ -44,12 +44,6 @@ import com.htc.sample.bleexample.profiles.ProfileClientFactory;
  */
 public class ConnectActivity extends Activity {
 	
-	public static final String ACTION_STATUS_MESSAGE = 
-			ConnectActivity.class.getName() + ".ACTION_STATUS_MESSAGE";
-	
-	public static final String STATUS_MESSAGE_EXTRA = 
-			ConnectActivity.class.getName() + ".STATUS_MESSAGE_EXTRA";
-	
 	private static final int CUSTOM_SCAN_INTERVAL_MS = 2 * 1000;
 	
 	private static final int CUSTOM_SCAN_WINDOW_MS = 2 * 1000;
@@ -79,14 +73,27 @@ public class ConnectActivity extends Activity {
 						mUi.appendStatus("Characteristic changed.\n");
 					} else if ( intent.getAction().equals(BleActions.ACTION_DISCONNECTED) ) {
 						mUi.appendStatus("BLE Profile disconnected\n");
-					} else if ( intent.getAction().equals(ACTION_STATUS_MESSAGE) ) {
-						final String message = intent.getStringExtra(STATUS_MESSAGE_EXTRA);
+					} else if ( intent.getAction().equals(BleActions.ACTION_STATUS_MESSAGE) ) {
+						final String message = intent.getStringExtra(BleActions.STATUS_MESSAGE_EXTRA);
+						final Float x = getFloatExtraOrNull(intent, BleActions.STATUS_X_EXTRA);
+						final Float y = getFloatExtraOrNull(intent, BleActions.STATUS_Y_EXTRA);
+						final Float z = getFloatExtraOrNull(intent, BleActions.STATUS_Z_EXTRA);
+						final Float range = getFloatExtraOrNull(intent, BleActions.STATUS_RANGE_EXTRA);
+						mUi.setPointer(x, y, z, range);
 						mUi.appendStatus(message + "\n");
 					}
 				}
 			});
 		}
 	};
+	
+	private static final Float getFloatExtraOrNull(final Intent aIntent, final String aKey) {
+		if ( aIntent.getExtras().containsKey(aKey)){
+			return aIntent.getFloatExtra(aKey, 0f);
+		} else {
+			return null;
+		}		
+	}
 	
 	private static final String LOG_TAG = ConnectActivity.class.getName();
 
@@ -174,7 +181,7 @@ public class ConnectActivity extends Activity {
 			filter.addAction(BleActions.ACTION_REFRESHED);
 			filter.addAction(BleActions.ACTION_NOTIFICATION);
 			filter.addAction(BleActions.ACTION_DISCONNECTED);
-			filter.addAction(ACTION_STATUS_MESSAGE);
+			filter.addAction(BleActions.ACTION_STATUS_MESSAGE);
 			registerReceiver(mReceiver, filter);
 			
 			//Create client.
@@ -348,6 +355,7 @@ public class ConnectActivity extends Activity {
 		}
 		
 		try {
+			// TODO check return integer?
 			mClient.connect(device);
 		} catch (Exception e) {
 			Log.e(LOG_TAG, "error connecting", e);
@@ -369,25 +377,6 @@ public class ConnectActivity extends Activity {
 		final Intent intent = new Intent(this, ConnectionPreferenceActivity.class);
 		startActivity(intent);
 		finish();
-	}
-	
-	public static void broadcast(final Context aContext, 
-			final String aAction, final BluetoothDevice aDevice) {
-		Intent intent = new Intent();
-		intent.setAction(aAction);
-		if (null != aDevice) {
-			intent.putExtra(BluetoothDevice.EXTRA_DEVICE, aDevice.getAddress());
-		}
-		aContext.sendBroadcast(intent);
-	}
-	
-	public static void broadcastStatus(final Context aContext, final String aStatus) {
-		Intent intent = new Intent();
-		intent.setAction(ConnectActivity.ACTION_STATUS_MESSAGE);
-		if ( null != aStatus ) {
-			intent.putExtra(ConnectActivity.STATUS_MESSAGE_EXTRA, aStatus);
-		}
-		aContext.sendBroadcast(intent);		
 	}
 
 }

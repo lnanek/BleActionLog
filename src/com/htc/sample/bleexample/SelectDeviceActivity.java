@@ -121,8 +121,8 @@ public class SelectDeviceActivity extends Activity {
 	};
 
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		public void onReceive(Context paramContext, Intent paramIntent) {
-			String action = paramIntent.getAction();
+		public void onReceive(final Context aContext, final Intent aIntent) {
+			final String action = aIntent.getAction();
 			// Scanning for devices started.
 			if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
 				setProgressBarIndeterminateVisibility(true);
@@ -133,11 +133,11 @@ public class SelectDeviceActivity extends Activity {
 			}
 			// Found a new device.
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-				BluetoothDevice localBluetoothDevice = (BluetoothDevice) paramIntent
+				final BluetoothDevice device = (BluetoothDevice) aIntent
 						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				if (BleAdapter.getDeviceType(localBluetoothDevice) == BleAdapter.DEVICE_TYPE_BLE
-						|| BleAdapter.getDeviceType(localBluetoothDevice) == BleAdapter.DEVICE_TYPE_DUMO) {
-					addDevice(localBluetoothDevice);
+				if (BleAdapter.getDeviceType(device) == BleAdapter.DEVICE_TYPE_BLE
+						|| BleAdapter.getDeviceType(device) == BleAdapter.DEVICE_TYPE_DUMO) {
+					addDevice(device);
 				}
 			}
 			// Scanning for devices finished.
